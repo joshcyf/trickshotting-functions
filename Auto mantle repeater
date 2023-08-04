@@ -13,9 +13,10 @@ t_autoMantleRepeater(){
 	}
 }
 autoMantleRepeater(){
-  if(!isdefined(self.pers["mantlepos"]))self.pers["mantlepos"] = (0,0,0);
-	setDvarIfUninitialized("mantleCooldown", 1 );
-  self endon("automantlerepeater0");
+if(!isdefined(self.pers["mantlepos"]))
+	self.pers["mantlepos"] = (0,0,0);
+setDvarIfUninitialized("mantleCooldown", 1 );
+self endon("automantlerepeater0");
 	self endon("disconnect");
 	for(;;){
 		if(distance(self.pers["mantlepos"], self.origin) <= 145 && self.canMantle == true){
@@ -25,14 +26,12 @@ autoMantleRepeater(){
 		wait 0.000001;
 	}
 }
-saveMantlePos()
-{
+saveMantlePos(){
 	self.pers["mantlepos"] = self.origin;
 	setDvar("mantlePos", self.origin );
 	self iPrintln("Mantle pos saved.");
 }
-mantleCooldown()
-{
+mantleCooldown(){
 	self.canMantle = false;
 	wait getDvarFloat("mantleCooldown");
 	self.canMantle = true;	
@@ -40,7 +39,6 @@ mantleCooldown()
 hazza(){
     cw = self getcurrentweapon();
     if(self hasweapon("killstreak_predator_missile_mp")){
-
         houdiniweapon = "killstreak_precision_airstrike_mp";
         self giveweapon(houdiniweapon);
         wait 0.01;
@@ -49,9 +47,9 @@ hazza(){
         self takeweapon(houdiniweapon);
         wait 0.01;
         self switchtoweapon(cw);
-
-        }else{
-
+        }
+	else
+	{
         houdiniweapon = "killstreak_predator_missile_mp";
         self giveweapon(houdiniweapon);
         wait 0.01;
