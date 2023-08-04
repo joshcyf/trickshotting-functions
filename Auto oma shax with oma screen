@@ -1,0 +1,54 @@
+omashax(){
+	cw = cw();
+	self setweaponammoclip( cw, 500 );
+	self.fullclip = self getweaponammoclip( cw );
+	self setweaponammoclip( cw, 0 );
+	if(self hasWeapon("onemanarmy_mp"))self.keepoma = true;
+		else self.keepoma = false;
+	self giveweapon("onemanarmy_mp");
+	self switchtoweapon("onemanarmy_mp");
+	waitframe();
+	self endon("stopomashax");
+	for(;;){
+		if(cw() == "onemanarmy_mp"){
+			self openPopupMenu( game["menu_onemanarmy"] );
+			self switchtoweapon(cw);
+			self shaxammo(cw);
+			waitframe();
+		}
+		else
+		{
+			waitframe();
+		}
+		waitframe();
+	}
+}
+shaxammo(cw){
+	self endon("stopomashax");
+	waitframe();
+	if((isSubStr(cw(),"spas")||isSubStr(cw(),"model")||isSubStr(cw(),"m1014")||isSubStr(cw(),"model")))self setweaponammoclip( cw(), self.fullclip - 2 );
+	for(;;){
+		if(self getweaponammoclip(cw()) == self.fullclip){
+			waitframe();
+			self closePopupMenu();
+			self takeweapon(cw);
+			self playLocalSound( "foly_onemanarmy_bag3_plr" );
+			self playSoundToTeam( "foly_onemanarmy_bag3_npc", "allies", self );
+			self playSoundToTeam( "foly_onemanarmy_bag3_npc", "axis", self );	
+			NSB = createPrimaryProgressBar( 25 );
+			NSBText = createPrimaryProgressBarText( 25 );
+			NSBText settext( "Changing Kit..." );
+			NSB updateBar( 0, 1 / 3.1 );
+			for ( waitedTime = 0;waitedTime < 3.1 && isAlive( self ) && !level.gameEnded;
+			waitedTime += 0.05 )wait ( 0.05 );
+			NSB destroyElem();
+			NSBText destroyElem();
+			self giveweapon(cw);
+			self setspawnweapon(cw);
+			if(self.keepoma == false)
+				self takeweapon("onemanarmy_mp");
+			self notify("stopomashax");
+		}
+		waitframe();
+	}
+}
