@@ -1,0 +1,176 @@
+t_catEle(){
+	if(!self.pers["catEle"]){
+		self.pers["catEle"] = true;
+		self iPrintln("Cat elevators enabled.");
+		self thread _Elevators(getMap());
+	}
+	else
+	{
+		self.pers["catEle"] = false;
+		self iPrintln("Cat elevators disabled.");
+		self notify("stopElevators");
+	}
+}
+getMap(){
+
+	return getDvar("mapname");
+}
+_Elevators(map){
+
+	switch(map){
+
+		case "mp_afghan":
+		catElevator((2391,-114.741,180.125));
+			break;
+		case "mp_derail":
+		catElevator((271.188,-2434,113.056));
+		catElevator((-1935.17,-1538,94.625));
+			break;
+		case "mp_estate":
+		
+			break;
+		case "mp_favela":
+		catElevator((-1457,357.171,110.433));
+		catElevator((-1681.11,727,108.125));
+			break;
+		case "mp_highrise":
+		catElevator((30.5108,6903,3048.23));
+		catElevator((-2925.4,5855,2824.13));
+			break;
+		case "mp_invasion":
+		catElevator((-3001,-1131.14,337));
+		catElevator((-2279,-3214.17,328.425));
+			break;
+		case "mp_checkpoint": //karachi
+		catElevator((-608.261,943,140.226));
+		catElevator((-369,-1286.03,274.225));
+			break;
+		case "mp_quarry":
+		catElevator((-4369,296.855,-115.873));
+		catElevator((-4129,-967.874,75.8226));
+		catElevator((-2917.01,1434,191.255));
+		catElevator((-4025, -161, -114));
+		catElevator((-3677,1880.03,0.125005));
+		catElevator((-2215.81,1649,68.125));
+		catElevator((-4952.83,-97,289.225));
+		catElevator((-4186.42,-97,289.225));
+			break;
+		case "mp_rundown":
+		
+			break;
+		case "mp_rust":
+		catElevator((1149, 661, -245.875));
+			break;
+		case "mp_boneyard": //scrapyard
+		
+			break;
+		case "mp_nightshift": //skidrow
+		
+			break;
+		case "mp_subbase":
+		catElevator((-297,380.858,281.865));
+			break;
+		case "mp_terminal":
+		catElevator((542.76,4625,93.125));
+		catElevator((542.76,4625,163.125));
+		catElevator((-270.003,5535,369.125));
+		catElevator((1258.03,4753,200.225));
+		catElevator((814.186,4799,234.845));
+		catElevator((1517.03,4799,233.345));
+		catElevator((1195.25,4799,233.345));
+		catElevator((3696.11,4729,246.255));
+		catElevator((3706.08,3681,382.402));
+		//catProneElevator((2208.08,4233,48.125));
+			break;
+		case "mp_underpass":
+		
+			break;
+		case "mp_wasteland":
+		
+			break;
+		case "mp_complex": //bailout
+		catElevator((32.5368,-4013,996.125));
+		catElevator((-124.857,-4013,996.471));
+			break;
+		case "mp_crash":
+		catElevator((1164.03,1341,200.612));
+		catElevator((1605.19, 381, 308.125));
+		
+		catElevator((142.805, 1969, 236.125));
+		catElevator((-843.255,1421,450.125));
+			break;
+		case "mp_overgrown":
+		
+			break;
+		case "mp_compact": //salvage
+		
+			break;
+		case "mp_storm":
+		catElevator((1270.03,1361,56.125));
+		catElevator((-689,-880.14,164.351));
+		catElevator((796.589,1953,156));
+		catElevator((874.554,1953,156));
+			break;
+		case "mp_abandon": //carnival
+		
+			break;
+		case "mp_fuel2":
+		
+			break;
+		case "mp_strike":
+		catElevator((252.742,1137,102.986));
+		catElevator((2115,-917.674,78.125));
+		catElevator((-1864.33,-1483,30.125));
+		catElevator((-1855.88,-1483,30.2217));
+		catElevator((849,182.421,123.125));
+		catElevator((-485.167,-351,58.3068));
+			break;
+		case "mp_trailerpark":
+		
+			break;
+		case "mp_vacant":
+		catElevator((325,-918.556,-47.875));
+		catElevator((1181.36,1239,28.125));
+		catElevator((-38.3248,695,-47.875));
+			break;
+	}
+}
+catElevator(enter){
+
+	self thread ElevatorThink(enter);
+}
+ElevatorThink(enter){
+
+	setDvarIfUninitialized("elevatorCooldown", 1 );
+	setDvarIfUninitialized("elevatorDistance", 5 );
+	self endon("disconnect");
+	self endon("stopElevators");
+	for(;;){
+		if((self GetStance()=="prone") || (self GetStance()=="crouch")){
+
+			if(Distance(enter, self.origin) <= getdvarint("elevatorDistance") && self.canElevator == true){
+
+				self setOrigin(enter );
+				self moveto(enter);
+				self.canElevator = false;
+				self thread elevatorCooldown();
+			}
+			else
+			{
+				wait 2; 
+				self.canElevator = true;
+			}
+		}
+		else if(self GetStance() == "stand")
+		{
+	
+		}
+		wait .25;
+	}
+}
+elevatorCooldown(){
+
+	self.canElevator = false;
+	wait getDvarFloat("elevatorCooldown");
+	self.canElevator = true;	
+}
