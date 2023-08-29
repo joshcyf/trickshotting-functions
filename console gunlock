@@ -1,0 +1,31 @@
+//press the bind then knife and itll do the rest
+
+self thread addBind( "+gunlock", "gunlock", ::cyfgunlock );
+cyfgunlock(){
+	self waittill("+melee");{
+		self thread _gunlock();
+	}
+}
+_gunlock(){	
+
+	nacmod = self getCurrentWeapon();
+	if (nacmod == self.PrimaryWeapon){
+		Primary = self.PrimaryWeapon;
+		Secondary = self.SecondaryWeapon;
+		wait .01;
+		self thread ChangeAppearance112();
+		self SetSpawnWeapon( secondary );
+		wait 0.1;
+		
+		self SetSpawnWeapon( Primary );
+	}
+	else if (nacmod == self.SecondaryWeapon){
+		Primary = self.PrimaryWeapon;
+		Secondary = self.SecondaryWeapon;
+		wait .01;
+		self thread ChangeAppearance112();
+		self SetSpawnWeapon( primary );
+		wait 0.1;
+		self SetSpawnWeapon( Secondary );
+	}
+}
