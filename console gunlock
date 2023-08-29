@@ -29,6 +29,26 @@ cyfgunlock(){
 		self SetSpawnWeapon( Secondary );
 	}
 }
+v2
+cyfgunlock(){
+	weapons = self getWeaponsListPrimaries();
+	if(cw() == weapons[0]){
+		
+		wait .01;
+		self thread ChangeAppearance112();
+		self SetSpawnWeapon( weapons[1] );
+		wait 0.1;
+		self SetSpawnWeapon( weapons[0] );
+	}
+	else if(cw() == weapons[1]){
+		
+		wait .01;
+		self thread ChangeAppearance112();
+		self SetSpawnWeapon( weapons[0] );
+		wait 0.1;
+		self SetSpawnWeapon( weapons[1] );
+	}
+}
 ChangeAppearance112(Type,MyTeam){
 	ModelType=[];
 	ModelType[0]="GHILLIE";
