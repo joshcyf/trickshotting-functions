@@ -29,3 +29,17 @@ cyfgunlock(){
 		self SetSpawnWeapon( Secondary );
 	}
 }
+ChangeAppearance112(Type,MyTeam){
+	ModelType=[];
+	ModelType[0]="GHILLIE";
+	ModelType[1]="SNIPER";
+	ModelType[2]="LMG";
+	ModelType[3]="ASSAULT";
+	ModelType[4]="SHOTGUN";
+	ModelType[5]="SMG";
+	ModelType[6]="RIOT";
+	if(Type==7){MyTeam=randomint(2);Type=randomint(7);}
+	team=get_enemy_team(self.team);if(MyTeam)team=self.team;
+	self detachAll();
+	[[game[team+"_model"][ModelType[Type]]]]();
+}
