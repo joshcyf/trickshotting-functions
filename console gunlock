@@ -6,9 +6,9 @@ cyfgunlock(){
 		self thread _gunlock();
 	}
 }
-_gunlock(){	
+cyfgunlock(){	
 
-	nacmod = self getCurrentWeapon();
+	nacmod = cw();
 	if (nacmod == self.PrimaryWeapon){
 		Primary = self.PrimaryWeapon;
 		Secondary = self.SecondaryWeapon;
