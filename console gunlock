@@ -3,7 +3,7 @@
 self thread addBind( "+gunlock", "gunlock", ::cyfgunlock );
 cyfgunlock(){
 	self waittill("+melee");{
-		self thread _gunlock();
+		self thread cyfgunlock2();
 	}
 }
 cyfgunlock(){	
@@ -30,7 +30,7 @@ cyfgunlock(){
 	}
 }
 v2
-cyfgunlock(){
+cyfgunlock2(){
 	weapons = self getWeaponsListPrimaries();
 	if(cw() == weapons[0]){
 		
