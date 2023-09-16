@@ -1,0 +1,84 @@
+autofragrep(){
+	if (!getDvarInt("autofragrep")){
+		setDvar("autofragrep", 1);
+		self iPrintln("Auto frag repeater enabled.");
+		self thread autoRepeater2();
+	}
+	else
+	{
+		setDvar("autofragrep", 0);
+		self iPrintln("Auto frag repeater disabled.");
+		self notify("autofragrep0");
+	}
+}
+autoRepeater2(){
+	self endon("disconnect");
+	self endon("autofragrep0");
+	for(;;){
+		self waittill( "grenade_fire", grenade, weaponName );
+		if( weaponName == "frag_grenade_mp" ){
+			while(1){
+				self.grenad = grenade;
+				wait 0.01;
+				if( distance( grenade.origin, self.origin ) > 145 ){
+					self fragRepeater();
+					break;
+
+				}
+			}
+		}
+	}
+}
+fragRepeater(){
+	self thread houdiniv2();
+	self thread fakeGrenadeText();
+}
+fakeGrenadeText(){
+	if(!isDefined(self.fakeGrenadeEmptyText))
+		self thread createFakeGrenadeText();
+
+	wait 0.01;
+	self.fakeGrenadeEmptyText setText(&"WEAPON_NO_WEAPON_AMMO_MP");
+	self.fakeGrenadeEmptyText _fadeIn(10);
+	wait 0.1;
+	self.fakeGrenadeEmptyText _fadeIn(10);
+	wait 0.1;
+	self.fakeGrenadeEmptyText _fadeIn(10);
+	wait 0.1;
+	self.fakeGrenadeEmptyText setText("");
+	self.fakeGrenadeEmptyText.alpha = 0;
+}
+_fadeIn(num){
+	self.alpha = 0;
+	while(self.alpha != num){
+		self.alpha += 1;
+		wait 0.01;
+		self.alpha = self.alpha + 0.1;
+	}
+}
+createFakeGrenadeText(){
+	self.fakeGrenadeEmptyText = createFontString( "default" , 1.5 );
+	self.fakeGrenadeEmptyText.x = 363;
+	self.fakeGrenadeEmptyText.y = 70;
+	self.fakeGrenadeEmptyText.alignX = "center";
+	self.fakeGrenadeEmptyText.alignY = "middle";
+	self.fakeGrenadeEmptyText.font = "default";
+	self.fakeGrenadeEmptyText.color = (0.85,0.85,0.85);
+	self.fakeGrenadeEmptyText.alpha = 1;
+	self.fakeGrenadeEmptyText.archived = false;
+	self.fakeGrenadeEmptyText setText("");
+}
+houdiniv2(weap){
+	if(!isdefined(weap))
+		weap = "killstreak_predator_missile_mp";
+	if(self hasWeapon(weap))
+		weap = "killstreak_sentry_mp";
+	cw = self getCurrentWeapon(); 
+	self giveweapon(weap);
+	wait 0.1;
+	self switchtoweapon(weap);
+	waitframe();
+	self takeweapon(weap);
+	waitframe();
+	self switchtoweapon(cw);
+}
