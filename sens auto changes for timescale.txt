@@ -1,0 +1,16 @@
+timescaleBind()
+{
+	self endon("disconnect");
+	def_TS = 1;
+	def_maxSens = 4;
+	self notifyOnPlayerCommand( "timescale", "timescale" );
+	for(;;)
+	{
+		self waittill("timescale");
+		TS = getDvarFloat("timescale");
+		game["timescale"] = TS;
+		adj_Sens = def_maxSens / ( def_TS / TS );
+		setDvar("input_viewSensitivity", adj_Sens );
+		self iPrintln("Timescale set to " + TS + "\nSensitivity set to " + adj_Sens);
+	}
+}
