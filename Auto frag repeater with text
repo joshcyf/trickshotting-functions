@@ -1,8 +1,12 @@
+/*
+to make it continue after round ends put this in onplayerspawned
+if(getDvarInt("autofragrep"))self thread autoFragRepeater();
+*/
 autofragrep(){
 	if (!getDvarInt("autofragrep")){
 		setDvar("autofragrep", 1);
 		self iPrintln("Auto frag repeater enabled.");
-		self thread autoRepeater2();
+		self thread autoFragRepeater();
 	}
 	else
 	{
@@ -11,74 +15,77 @@ autofragrep(){
 		self notify("autofragrep0");
 	}
 }
-autoRepeater2(){
+autoFragRepeater(){
+
 	self endon("disconnect");
 	self endon("autofragrep0");
 	for(;;){
+
 		self waittill( "grenade_fire", grenade, weaponName );
 		if( weaponName == "frag_grenade_mp" ){
+
 			while(1){
+
 				self.grenad = grenade;
 				wait 0.01;
 				if( distance( grenade.origin, self.origin ) > 145 ){
+
 					self fragRepeater();
 					break;
-
 				}
 			}
 		}
 	}
 }
 fragRepeater(){
-	self thread houdiniv2();
-	self thread fakeGrenadeText();
-}
-fakeGrenadeText(){
-	if(!isDefined(self.fakeGrenadeEmptyText))
-		self thread createFakeGrenadeText();
 
+	self thread houdini();
+	self thread fakeCenterText(&"WEAPON_NO_WEAPON_AMMO_MP");
+}
+
+fakeCenterText(text){
+	
+	if(!isDefined(self.fakeCenterText))
+		self thread createFakeCenterText();
+		
 	wait 0.01;
-	self.fakeGrenadeEmptyText setText(&"WEAPON_NO_WEAPON_AMMO_MP");
-	self.fakeGrenadeEmptyText _fadeIn(10);
+	self.fakeCenterText setText(text);
+	self.fakeCenterText _fadeIn(10);
 	wait 0.1;
-	self.fakeGrenadeEmptyText _fadeIn(10);
+	self.fakeCenterText _fadeIn(10);
 	wait 0.1;
-	self.fakeGrenadeEmptyText _fadeIn(10);
+	self.fakeCenterText _fadeIn(10);
 	wait 0.1;
-	self.fakeGrenadeEmptyText setText("");
-	self.fakeGrenadeEmptyText.alpha = 0;
+	self.fakeCenterText setText("");
 }
-_fadeIn(num){
-	self.alpha = 0;
-	while(self.alpha != num){
-		self.alpha += 1;
-		wait 0.01;
-		self.alpha = self.alpha + 0.1;
-	}
+createFakeCenterText(){
+
+	self.fakeCenterText = createFontString( "default" , 1.5 );
+	self.fakeCenterText.x = 362.5;
+	self.fakeCenterText.y = 60.4;
+	self.fakeCenterText.alignX = "center";
+	self.fakeCenterText.alignY = "middle";
+	self.fakeCenterText.font = "default";
+	self.fakeCenterText.color = (0.85, 0.85, 0.85);
+	self.fakeCenterText.alpha = 1;
+	self.fakeCenterText.archived = false;
+	self.fakeCenterText setText("");
 }
-createFakeGrenadeText(){
-	self.fakeGrenadeEmptyText = createFontString( "default" , 1.5 );
-	self.fakeGrenadeEmptyText.x = 363;
-	self.fakeGrenadeEmptyText.y = 70;
-	self.fakeGrenadeEmptyText.alignX = "center";
-	self.fakeGrenadeEmptyText.alignY = "middle";
-	self.fakeGrenadeEmptyText.font = "default";
-	self.fakeGrenadeEmptyText.color = (0.85,0.85,0.85);
-	self.fakeGrenadeEmptyText.alpha = 1;
-	self.fakeGrenadeEmptyText.archived = false;
-	self.fakeGrenadeEmptyText setText("");
-}
-houdiniv2(weap){
+//this does a real repeater the same way the bomb repeater works
+houdini(weap)
+{
 	if(!isdefined(weap))
 		weap = "killstreak_predator_missile_mp";
+	
 	if(self hasWeapon(weap))
 		weap = "killstreak_sentry_mp";
+
 	cw = self getCurrentWeapon(); 
-	self giveweapon(weap);
+	self giveWeapon(weap);
 	wait 0.1;
-	self switchtoweapon(weap);
+	self switchToWeapon(weap);
 	waitframe();
-	self takeweapon(weap);
+	self takeWeapon(weap);
 	waitframe();
-	self switchtoweapon(cw);
+	self switchToWeapon(cw);
 }
