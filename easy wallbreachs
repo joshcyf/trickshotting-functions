@@ -1,0 +1,48 @@
+t_catWallbreach(){ 
+
+	if( !getDvarInt( "wallbreachs" ) ){
+
+		self setclientdvar( "wallbreachs", 1 );
+		self thread _Wallbreachs();
+		self iPrintln("Wallbreachs enabled.");
+		
+	}
+	else
+	{
+		self setclientdvar( "wallbreachs", 0 );
+		self iPrintln( "Wallbreachs disabled." );
+		self notify( "stopwallbreachs" );
+	}
+}
+_Wallbreachs(){
+
+	map = getDvar( "mapname" );
+	switch( map ){
+
+		case "mp_favela":
+		catWallbreach( ( 624.074, 54.0733, 252.107 ) );
+		break;
+		case "mp_underpass":
+		catWallbreach( ( 1058.63, -405.129, 548.085 ) );
+		break;
+		case "mp_strike":
+		catWallbreach( ( 624.074, 54.0733, 252.107 ) );
+		break;
+	}
+}
+catWallbreach( enter ){
+
+	self endon( "disconnect" );
+	self endon( "death" );
+	self endon( "stopwallbreachs" );
+	for(;;){
+
+		if( Distance( enter, self.origin ) <= 10 )
+			self setClientDvar( "r_singleCell", 1 );
+	
+		else 
+			self setClientDvar( "r_singleCell", 0 );
+			
+		waitframe();
+	}
+}
