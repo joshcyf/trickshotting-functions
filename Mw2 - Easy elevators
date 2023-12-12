@@ -1,71 +1,71 @@
 t_catEle(){
-	if(!getDvarInt("elevators")){
-		self setClientDvar("elevators", 1 );
-		self iPrintln("Cat elevators enabled." );
+	if( !getDvarInt( "elevators" ) ){
+		self setClientDvar( "elevators", 1 );
+		self iPrintln( "Cat elevators enabled." );
 		self thread _Elevators();
 	}
 	else
 	{
-		self setClientDvar("elevators", 0 );
-		self iPrintln("Cat elevators disabled." );
-		self notify("stopElevators" );
+		self setClientDvar( "elevators", 0 );
+		self iPrintln( "Cat elevators disabled." );
+		self notify( "stopElevators" );
 	}
 }
 _Elevators(){
-	map = getDvar("mapname" );
-	switch(map){
+	map = getDvar( "mapname" );
+	switch( map ){
 
 		case "mp_afghan":
-		catElevator( (2391,-114.741,180.125), "crouch" );
+		catElevator( (  2391,-114.741,180.125 ), "crouch" );
 			break;
 		case "mp_derail":
-		catElevator( (271,-2434, 113), "prone" );
-		catElevator( (-1935, -1538, 95 ) );//crouch
-		catElevator( (769, -3124, 126), "prone" );
-		catElevator( (930, -3123, 121), "prone" );
-		catElevator( (930, -3551, 121), "prone" );
-		catElevator( (277, -1001, 113), "prone" );
+		catElevator( (  271,-2434, 113 ), "prone" );
+		catElevator( (  -1935, -1538, 95 ) );//crouch
+		catElevator( (  769, -3124, 126 ), "prone" );
+		catElevator( (  930, -3123, 121 ), "prone" );
+		catElevator( (  930, -3551, 121 ), "prone" );
+		catElevator( (  277, -1001, 113 ), "prone" );
 			break;
 		case "mp_estate":
 		
 			break;
 		case "mp_favela":
-		catElevator( (-1457,357.171,110.433 ) );
-		catElevator( (-1681.11,727,108.125 ) );
+		catElevator( (  -1457,357.171,110.433 ) );
+		catElevator( (  -1681.11,727,108.125 ) );
 			break;
 		case "mp_highrise":
-		catElevator( (30.5108,6903,3048.23 ) );
-		catElevator( (-2925.4,5855,2824.13 ) );
+		catElevator( (  30.5108,6903,3048.23 ) );
+		catElevator( (  -2925.4,5855,2824.13 ) );
 			break;
 		case "mp_invasion":
-		catElevator( (-3001,-1131.14,337 ) );
-		catElevator( (-2279,-3214.17,328.425 ) );
+		catElevator( (  -3001,-1131.14,337 ) );
+		catElevator( (  -2279,-3214.17,328.425 ) );
 		
-		catElevator( (-3359, -1237, 312 ) );//gas station jump ele
+		catElevator( (  -3359, -1237, 312 ) );//gas station jump ele
 			break;
 		case "mp_checkpoint": //karachi
-		catElevator( (-608.261,943,140.226 ) );
-		catElevator( (-369,-1286.03,274.225 ) );
-		catElevator( (-391, 321, 239 ) );
-		catElevator( (-610, 393, 141 ) );
-		catElevator( (-610, 393, 232 ) );
-		catElevator( (-384, 321, 232 ) );
+		catElevator( (  -608.261,943,140.226 ) );
+		catElevator( (  -369,-1286.03,274.225 ) );
+		catElevator( (  -391, 321, 239 ) );
+		catElevator( (  -610, 393, 141 ) );
+		catElevator( (  -610, 393, 232 ) );
+		catElevator( (  -384, 321, 232 ) );
 			break;
 		case "mp_quarry":
-		catElevator( (-4369,296.855,-115.873 ) );
-		catElevator( (-4129,-967.874,75.8226 ) );
-		catElevator( (-2917.01,1434,191.255 ) );
-		catElevator( (-4025, -161, -116 ) );//big ladder
-		catElevator( (-3677,1880.03,0.125005 ) );
-		catElevator( (-2215.81,1649,68.125 ) );
-		catElevator( (-4952.83,-97,289.225 ) );
-		catElevator( (-4186.42,-97,289.225 ) );
+		catElevator( (  -4369,296.855,-115.873 ) );
+		catElevator( (  -4129,-967.874,75.8226 ) );
+		catElevator( (  -2917.01,1434,191.255 ) );
+		catElevator( (  -4025, -161, -116 ) );//big ladder
+		catElevator( (  -3677,1880.03,0.125005 ) );
+		catElevator( (  -2215.81,1649,68.125 ) );
+		catElevator( (  -4952.83,-97,289.225 ) );
+		catElevator( (  -4186.42,-97,289.225 ) );
 			break;
 		case "mp_rundown":
 		
 			break;
 		case "mp_rust":
-		catElevator( (1155, 661, -246 ) );
+		catElevator( (  1155, 661, -246 ) );
 			break;
 		case "mp_boneyard": //scrapyard
 		
@@ -74,21 +74,19 @@ _Elevators(){
 		
 			break;
 		case "mp_subbase":
-		catElevator( (-297,380.858,281.865 ) );
+		catElevator( (  -297,380.858,281.865 ) );
 			break;
 		case "mp_terminal":
-		catElevator( (542.76,4625,93.125 ) );
-		catElevator( (542.76,4625,163.125 ) );
-		catElevator( (-270.003,5535,369.125 ) );
-		catElevator( (1258.03,4753,200.225 ) );
-		catElevator( (814.186,4799,234.845 ) );
-		catElevator( (1517.03,4799,233.345 ) );
-		catElevator( (1195.25,4799,233.345 ) );
-		catElevator( (3696.11,4729,246.255 ) );
-		catElevator( (3706.08,3681,382.402 ) );
-		//catProneElevator((2208.08,4233,48.125 ) );
-	
-		catElevator( (2209, 4233, 49), "prone" );
+		catElevator( (  542.76,4625,93.125 ) );
+		catElevator( (  542.76,4625,163.125 ) );
+		catElevator( (  -270.003,5535,369.125 ) );
+		catElevator( (  1258.03,4753,200.225 ) );
+		catElevator( (  814.186,4799,234.845 ) );
+		catElevator( (  1517.03,4799,233.345 ) );
+		catElevator( (  1195.25,4799,233.345 ) );
+		catElevator( (  3696.11,4729,246.255 ) );
+		catElevator( (  3706.08,3681,382.402 ) );
+		catElevator( (  2209, 4233, 49 ), "prone" );
 
 			break;
 		case "mp_underpass":
@@ -98,16 +96,16 @@ _Elevators(){
 		
 			break;
 		case "mp_complex": //bailout
-		catElevator( (32.5368,-4013,996.125 ) );
-		catElevator( (-124.857,-4013,996.471 ) );
+		catElevator( (  32.5368,-4013,996.125 ) );
+		catElevator( (  -124.857,-4013,996.471 ) );
 			break;
 		case "mp_crash":
-		catElevator( (1164.03,1341,200.612 ) );
-		catElevator( (1605.19, 381, 308.125 ) );
+		catElevator( (  1164.03,1341,200.612 ) );
+		catElevator( (  1605.19, 381, 308.125 ) );
 		
-		catElevator( (129, 1969, 236 ) );
-		catElevator( (-848, 1421, 450), "crouch" );
-		catElevator( (1152, 1341, 200), "crouch" );
+		catElevator( (  129, 1969, 236 ) );
+		catElevator( ( -848, 1421, 450 ), "crouch" );
+		catElevator( ( 1152, 1341, 200 ), "crouch" );
 			break;
 		case "mp_overgrown":
 		
@@ -116,10 +114,10 @@ _Elevators(){
 		
 			break;
 		case "mp_storm":
-		catElevator( (1270.03,1361,56.125 ) );
-		catElevator( (-689,-880.14,164.351 ) );
-		catElevator( (796.589,1953,156 ) );
-		catElevator( (874.554,1953,156 ) );
+		catElevator( ( 1270.03,1361,56.125 ) );
+		catElevator( ( -689,-880.14,164.351 ) );
+		catElevator( ( 796.589,1953,156 ) );
+		catElevator( (  874.554,1953,156 ) );
 			break;
 		case "mp_abandon": //carnival
 		
@@ -128,20 +126,20 @@ _Elevators(){
 		
 			break;
 		case "mp_strike":
-		catElevator( (252.742,1137,102.986 ) );
-		catElevator( (2115,-917.674,78.125 ) );
-		catElevator( (-1864.33,-1483,30.125 ) );
-		catElevator( (-1855.88,-1483,30.2217 ) );
-		catElevator( (849,182.421,123.125 ) );
-		catElevator( (-485.167,-351,58.3068 ) );
+		catElevator( (  252.742,1137,102.986 ) );
+		catElevator( (  2115,-917.674,78.125 ) );
+		catElevator( (  -1864.33,-1483,30.125 ) );
+		catElevator( (  -1855.88,-1483,30.2217 ) );
+		catElevator( (  849,182.421,123.125 ) );
+		catElevator( (  -485.167,-351,58.3068 ) );
 			break;
 		case "mp_trailerpark":
 		
 			break;
 		case "mp_vacant":
-		catElevator( (325,-918.556,-47.875 ) );
-		catElevator( (1181.36,1239,28.125 ) );
-		catElevator( (-38.3248,695,-47.875 ) );
+		catElevator( (  325,-918.556,-47.875 ) );
+		catElevator( (  1181.36,1239,28.125 ) );
+		catElevator( (  -38.3248,695,-47.875 ) );
 			break;
 	}
 }
