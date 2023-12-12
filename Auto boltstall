@@ -2,13 +2,13 @@ t_boltstall(){
 
 	if (!getDvarInt( "boltstall" ) ){
 
-		self iprintln("Bolt stalls enabled.");
+		self iprintln( "Bolt stalls enabled." );
 		self setClientDvar( "boltstall", 1 );
 		self thread boltStall();
 	}
 	else
 	{
-		self iprintln("Bolt stalls disabled.");
+		self iprintln( "Bolt stalls disabled." );
 		self setClientDvar( "boltstall", 0 );
 		self notify( "boltstallend" );
 	}
@@ -46,7 +46,10 @@ ladderWatch(){
 	}
 }
 doBoltStall(){
-	wait getDvarFloat("boltstall_delay");
+	if( getDvarInt( "boltstall_num" ) >= 2 )
+		setDvar( "boltstall_delay", 0.25 );
+	
+	wait getDvarFloat( "boltstall_delay" );
 	self.vel = self getVelocity();
 	self.newvel = ( ( self.vel[0] * 0.75 ), ( self.vel[1] * 0.75 ), self.vel[2] - 0.75 );
 	self setVelocity( self.newvel );
