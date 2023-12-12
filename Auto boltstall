@@ -1,0 +1,57 @@
+t_boltstall(){
+
+	if (!getDvarInt( "boltstall" ) ){
+
+		self iprintln("Bolt stalls enabled.");
+		self setClientDvar( "boltstall", 1 );
+		self thread boltStall();
+	}
+	else
+	{
+		self iprintln("Bolt stalls disabled.");
+		self setClientDvar( "boltstall", 0 );
+		self notify( "boltstallend" );
+	}
+}
+boltStall(){
+	setDvarIfUninitialized( "boltstall_num", 1 );
+	setDvarIfUninitialized( "boltstall_delay", 0.25 );
+	self endon( "disconnect" );
+	self endon( "boltstallend" );
+	self thread ladderWatch();
+	self notifyOnPlayerCommand( "boltstall", "+gostand" );
+	for(;;){
+
+		self waittill( "boltstall" );
+		if( self.ladderwatch ){
+
+			self.laddercount++;
+			if( self.laddercount <= getDvarInt( "boltstall_num" ) )
+				self thread doBoltStall();
+		
+			else wait 2;
+		}
+	}
+}
+
+ladderWatch(){
+
+	self endon( "boltstallend" );
+	for(;;){
+
+		wait 0.01;
+		if( self isOnLadder() ) self.ladderwatch = true;
+		if( !self isOnLadder() ) self.ladderwatch = false;
+		if( self isOnGround() ) self.laddercount = 0;
+	}
+}
+doBoltStall(){
+	wait getDvarFloat("boltstall_delay");
+	self.vel = self getVelocity();
+	self.newvel = ( ( self.vel[0] * 0.75 ), ( self.vel[1] * 0.75 ), self.vel[2] - 0.75 );
+	self setVelocity( self.newvel );
+	wait self.pers["boltstallwait"];
+	self.vel = self getVelocity();
+	self.newvel = ( ( self.vel[0] * -0.5 ), ( self.vel[1] * -0.5 ), self.vel[2] - 0.75 );
+	self setVelocity( self.newvel );
+}
