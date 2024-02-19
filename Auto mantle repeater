@@ -1,62 +1,81 @@
-t_autoMantleRepeater(){
-	if(!self.pers["automantlerepeater"]){
-		self.pers["automantlerepeater"] = true;
+t_autoMantleRepeater()
+{
+	if(!getDvarInt("automantlerepeater"))
+	{
+		self setClientDvar("automantlerepeater", 1 );
 		self iPrintln("Auto mantle repeater enabled.");
 		self thread autoMantleRepeater();
 	}
 	else
-	{
-		
-		self.pers["automantlerepeater"] = false;
+	{	
+		self setClientDvar("automantlerepeater", 0 );
 		self iPrintln("Auto mantle repeater disabled.");
 		self notify("automantlerepeater");
 	}
 }
-autoMantleRepeater(){
-if(!isdefined(self.pers["mantlepos"]))
-	self.pers["mantlepos"] = (0,0,0);
-setDvarIfUninitialized("mantleCooldown", 1 );
-self endon("automantlerepeater0");
+autoMantleRepeater()
+{
+	setDvarIfUninitialized("mantleCooldown", 1 );
+	if(!isDefined(self.pers["mantlePos"]))
+		self.pers["mantlePos"] = ((23234, 3234234, 100));
+
+	self endon("automantlerepeater0");
 	self endon("disconnect");
-	for(;;){
-		if(distance(self.pers["mantlepos"], self.origin) <= 145 && self.canMantle == true){
-			self thread hazza();
+	for(;;)
+	{
+		if(self isFacingFriendly(0.9) && distance(self.pers["mantlePos"], self.origin) <= getDvarInt("mantleDistance") && self.canMantle == true)
+		{
+			self thread houdiniv2();
 			self thread mantleCooldown();
 		}
 		wait 0.000001;
 	}
 }
-saveMantlePos(){
+saveMantlePos()
+{
 	self.pers["mantlepos"] = self.origin;
 	setDvar("mantlePos", self.origin );
 	self iPrintln("Mantle pos saved.");
 }
-mantleCooldown(){
+mantleCooldown()
+{
 	self.canMantle = false;
 	wait getDvarFloat("mantleCooldown");
 	self.canMantle = true;	
 }
-hazza(){
-    cw = self getcurrentweapon();
-    if(self hasweapon("killstreak_predator_missile_mp")){
-        houdiniweapon = "killstreak_precision_airstrike_mp";
-        self giveweapon(houdiniweapon);
-        wait 0.01;
-        self switchtoweapon(houdiniweapon);
-        wait 0.01;
-        self takeweapon(houdiniweapon);
-        wait 0.01;
-        self switchtoweapon(cw);
-        }
-	else
+isFacingFriendly(toleranceCosAngle)
+{
+	friendly = getFriendlyBots();
+	vecToFriendly = friendly.origin - self.origin;
+	distToFriendly = length( vecToFriendly );
+	
+	if(distToFriendly < 1)
+		return true;
+	
+	forward = anglesToForward( self.angles );
+	return ( ( forward[0] * vecToFriendly[0] ) + ( forward[1] * vecToFriendly[1] ) ) / distToFriendly > toleranceCosAngle;
+}
+getFriendlyBots()
+{
+	for( i = 0; i < level.players.size; i++ )
 	{
-        houdiniweapon = "killstreak_predator_missile_mp";
-        self giveweapon(houdiniweapon);
-        wait 0.01;
-        self switchtoweapon(houdiniweapon);
-        wait 0.01;
-        self takeweapon(houdiniweapon);
-        wait 0.01;
-        self switchtoweapon(cw);
-    }
+		if(level.players[i] isBot() && level.players[i].team == self.team)
+			return level.players[i];
+	}
+}
+getClosestPlayer()
+{
+	target = undefined;
+	foreach( player in level.players )
+	{
+		if(( player == self ) || ( !isAlive( player ) ) || ( level.teamBased && self.pers["team"] == player.pers["team"] ))
+				continue;
+		if(isDefined( target ))
+		{
+			if( closer( self.origin, player.origin, target.origin ))
+				target = player;
+		}
+		else target = player;
+	}
+	return target;
 }
