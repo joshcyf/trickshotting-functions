@@ -31,13 +31,13 @@ _Wallbreachs(){
 	}
 }
 catWallbreach( enter ){
-
+	setDvarIfUninitialized("wallbreachDistance", 10 );
 	self endon( "disconnect" );
 	self endon( "death" );
 	self endon( "stopwallbreachs" );
 	for(;;){
 
-		if( Distance( enter, self.origin ) <= 10 )
+		if( Distance( enter, self.origin ) <= getDvarInt( "wallbreachDistance" ) )
 			self setClientDvar( "r_singleCell", 1 );
 	
 		else 
