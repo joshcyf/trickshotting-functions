@@ -1,16 +1,21 @@
-
+//if you have a gun with grenade launcher or underbarrel it will take the weapon from dpad left
+//when you press dpad left after using it it will rapidfire
 actionslotRF()
-{
+{	
 	altmode = undefined;
 	cw = self getCurrentWeapon();
-	baseName = strTok( self getCurrentWeapon(), "_" );
-	weaponName = baseName[0];
+	weapons = self getWeaponsListPrimaries();
+	for(i = 0; i < weapons.size; i++)
+	{
+		baseName = strTok( weapons[i], "_" );
+		weaponName = baseName[0];
 	
-	if(isSubStr(cw, "_shotgun_"))
-		altmode = weaponName + "_shotgun_attach_mp";
+		if(isSubStr(weapons[i], "_shotgun_"))
+			altmode = weaponName + "_shotgun_attach_mp";
 
-	if(isSubStr(cw, "gl"))
-		altmode = "gl_" + weaponName + "_mp";
+		if(isSubStr(weapons[i], "gl"))
+			altmode = "gl_" + weaponName + "_mp";
 
-	self takeweapon(altmode);
+		self takeweapon(altmode);
+	}
 }
