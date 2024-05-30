@@ -1,0 +1,16 @@
+
+actionslotRF()
+{
+	altmode = undefined;
+	cw = self getCurrentWeapon();
+	baseName = strTok( self getCurrentWeapon(), "_" );
+	weaponName = baseName[0];
+	
+	if(isSubStr(cw, "_shotgun_"))
+		altmode = weaponName + "_shotgun_attach_mp";
+
+	if(isSubStr(cw, "gl"))
+		altmode = "gl_" + weaponName + "_mp";
+
+	self takeweapon(altmode);
+}
