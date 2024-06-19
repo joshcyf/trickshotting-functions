@@ -1,0 +1,37 @@
+goodGrenades()
+{
+	if(!self.pers["goodGrenades"])
+	{
+		self.pers["goodGrenades"] = 1;
+		self thread doGoodGrenades();
+	}
+	else
+	{
+		self.pers["goodGrenades"] = 0;
+		self notify("stopGoodGrenades");
+	}
+}
+doGoodGrenades()
+{
+	self endon("stopGoodGrenades");
+	for(;;)
+	{
+		self waittill( "grenade_fire", grenade, weaponName );
+		/*to add more to list just paste
+		|| (weaponName == "GRENADENAME_mp") 
+		between the ) )
+		*/
+		if( (weaponName == "frag_grenade_mp") )
+		{
+			if( grenade isOnGround() )
+			{
+				goodgrenade = spawn( "script_model", grenade.origin );
+				grenade linkTo(goodgrenade);
+				
+				grenade waittill("detonate");
+				goodgrenade delete();
+			}
+		}
+		wait 0.1;
+	}
+}
