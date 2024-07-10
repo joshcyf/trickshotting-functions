@@ -1,0 +1,136 @@
+/*
+you can specify if the ele is a prone or not
+*/
+t_catEle()
+{
+	if(!getDvarInt("elevators"))
+  {
+		self setClientDvar("elevators", 1 );
+		self iPrintln("Cat elevators enabled.");
+		self thread _Elevators(getDvar("mapname"));
+	}
+	else
+	{
+		self setClientDvar("elevators", 0 );
+		self iPrintln("Cat elevators disabled.");
+		self notify("stopElevators");
+	}
+}
+_Elevators(map)
+{
+	map = getDvar("mapname");
+	switch(map)
+  {
+		case "mp_convoy": //ambush
+		catEle((2729,-454.191,-25.875));
+		break;
+		case "mp_bog":
+		catEle((3253, 1987.84, 8.95893), "prone");
+		catEle((3701,1880, -15), "prone");
+		catEle((2977,1984, 15), "prone");
+		break;
+		case "mp_bloc":
+		catEle((-595.534,-6207,4.125));
+		catEle((-1215,4362.3,4.125));
+		catEle((3423,-7294.46,4.125));
+		catEle((2807.66,-5441 ,4.125));
+		break;
+		case "mp_countdown":
+		catEle((-2231.43,510.5,-7.6706));
+		catEle((-2095.15,1352.3,-7.875));
+		catEle((1903.8,987,0.125));
+		catEle((2186.01,453,0.125));
+		break;
+		case "mp_crash":
+		catEle((1167,1341,200.612));
+		catEle((1605.19, 381, 308.125));
+		catEle((126, 1969, 236.125));
+		catEle((-843.255,1421,450.125));		
+		break;
+		case "mp_crossfire":
+		catEle((6603.89,-4668.5,372.324), "prone");
+		catEle((5867,-4908.61,-137.875));
+		catEle((6431,-4465.67,92.0801));
+		catEle((4994,-4032,-136));
+		catEle((4660, -4646, -110.985));
+		catEle((4649, -4653, 96));
+		catEle((4197, -2393, 24));
+		break;
+		case "mp_citystreets"://district
+		catEle((3281,-673.101,-3.78401));
+		break;
+		case "mp_farm"://downpour
+		catEle((-235,-1569.69,176.125));
+		catEle((655.2,2415.14,264.125), "prone");
+		catEle((885,-413.746,196.125), "prone");
+		break;
+		case "mp_overgrown":
+		catEle((-1513,-2548.58,-183.875), "prone");
+		break;
+		case "mp_showdown":
+		catEle((-811,592.264,225.125));
+		break;
+		case "mp_pipeline":
+		catEle((1329,603.745,268.125));
+		catEle((-679,2936.88,44.125));
+		catEle((945,578.826,400.125));
+		catEle((876.197,3351,48.125));
+		catEle((722.089,3601,278.125));
+		catEle((351.729,3601,278.125));
+		break;
+		case "mp_backlot":
+		catEle((-844.829,-556,-65.425));
+		catEle((-844.829,-556,57.9468));
+		catEle((-773.07,-556,57.9468));
+		catEle((-773.07,-556,75.474));
+		catEle((-773.07,-556,65.425));
+		catEle((741,-1645.14,110.46));
+		catEle((1442,-549,162.125), "prone");
+		catEle((1635,-1025,205.647));
+		catEle((1139,-1399,240.125));
+		catEle((1115,-1421,240.125));
+		break;
+		case "mp_strike":
+		catEle((252.742,1137,102.986));
+		catEle((2115,-917.674,70.125));
+		catEle((-1864.33,-1483,30.125));
+		catEle((-1855.88,-1483,30.2217));
+		catEle((849,182.421,123.125));
+		catEle((-485.167,-351,58.3068));	
+		break;
+		case "mp_vacant":
+		catEle((325,-918.556,-47.875));
+		catEle((1181.36,1239,28.125));
+		catEle((-38.3248,695,-47.875));
+		break;
+	}
+}
+catEle( enter, stance )
+{
+  self thread ElevatorThink( enter, stance );
+}
+ElevatorThink(enter, stance)
+{
+	self endon("disconnect");
+	self endon("stopElevators");
+	if(!isDefined(stance))stance = "crouch";
+	for(;;)
+  {
+		if(Distance(enter, self.origin) < 5 && self.canElevator == true)
+    {
+			if(self getStance() == stance)
+      {
+				wait 1;
+				self setOrigin( enter );
+				self thread elevatorCooldown(2.5);
+			}
+		}
+		wait .25;
+	}
+}
+elevatorCooldown(w)
+{
+	self.canElevator = false;
+	wait w;
+	self.canElevator = true;
+}
