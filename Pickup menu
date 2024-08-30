@@ -1,0 +1,138 @@
+  spawn/connect
+
+  if ( !isDefined( self.pers["weaponDrops"] ) ) self.pers["weaponDrops"] = 0;
+  if ( !isDefined( self.pers["reloadPickupsOnSpawn"] ) ) self.pers["reloadPickupsOnSpawn"] = 0;
+  if( self.pers["reloadPickupsOnSpawn"] && ( self.pers["weaponDrops"]  >= 1 ) )
+		self thread respawnPickups();
+
+//
+  self addMenu( "weap_pickup", "Weapon drop", "weapons" );
+	self addOpt( "weap_pickup", "Save weapon pickup " + self.pers["weaponDrops"] + "/5", ::saveWeaponPickup );
+	if( self.pers["weaponDrops"] >= 1 ) self addOpt( "weap_pickup", "Delete weapon pickup", ::deleteWeaponPickup );
+	for(i = 1;i < 6;i++)if( self.pers["weaponDrops"] >= i ) self addOpt( "weap_pickup", i + ": " + strTok(self.pers["pickupWeap"][i], "_")[0] + " menu", ::subMenu, "weap_pickup" + i );
+	if( self.pers["weaponDrops"] >= 1 ) self addOpt( "weap_pickup", "Respawn pickups", ::respawnPickups );
+	if( self.pers["weaponDrops"] >= 1 ) self addOpt( "weap_pickup", b2t(self.pers["reloadPickupsOnSpawn"]) + "Respawn pickups on spawn", ::t_reloadPickupsOnSpawn );
+	for(i = 1;i < 6;i++)
+	{
+		self addMenu( "weap_pickup" + i, self.pers["pickupWeap"][i], "weap_pickup" );
+		self addOpt( "weap_pickup" + i, "Move to self", ::tpPickup, i );
+		self addOpt( "weap_pickup" + i, "Clip: " + self.pers["pickupWeapClip"][i], ::weaponPickupClip, i);
+		self addOpt( "weap_pickup" + i, "Stock: " + self.pers["pickupWeapStock"][i], ::weaponPickupStock, i);
+	}
+//
+b2t(bool)
+{
+	if(bool)
+		return "^2";
+	else return "^1";
+	wait 0.1;
+}
+//
+saveWeaponPickup(weap, pos)
+{
+	if ( !isDefined( self.pers["weaponDrops"] ) ) self.pers["weaponDrops"] = 0;
+	if ( !isDefined( pos ) ) pos = self.origin;
+	if ( !isDefined( weap ) ) weap = self getCurrentWeapon();
+	if( self.pers["weaponDrops"] < 6 )
+	{
+		self.pers["weaponDrops"] += 1;
+		self.pers["pickupPos"][self.pers["weaponDrops"]] = pos;
+		self.pers["pickupWeap"][self.pers["weaponDrops"]] = weap;
+		self.pers["pickupWeapClip"][self.pers["weaponDrops"]] = self getWeaponAmmoClip( self.pers["pickupWeap"][self.pers["weaponDrops"]] );
+		self.pers["pickupWeapStock"][self.pers["weaponDrops"]] = self getWeaponAmmoStock( self.pers["pickupWeap"][self.pers["weaponDrops"]] );
+		cyfP("Pickup #" + self.pers["weaponDrops"] + " saved: " + self.pers["pickupWeap"][self.pers["weaponDrops"]] );
+		self.pers["tehpickup"][self.pers["weaponDrops"]] = createPickup(self.pers["pickupWeap"][self.pers["weaponDrops"]], self.pers["pickupPos"][self.pers["weaponDrops"]]);	
+	}
+}
+deleteWeaponPickup()
+{
+	self endon("disconnect");
+	if( self.pers["weaponDrops"] != 0 )
+	{
+		self.pers["pickupPos"][self.pers["weaponDrops"]] = undefined;
+		self.pers["pickupWeap"][self.pers["pickupWeap"]] = undefined;
+		self.pers["tehpickup"][self.pers["weaponDrops"]] delete();
+		self.pers["weaponDrops"] -= 1;
+		self iPrintln("Pickup #" + self.pers["weaponDrops"] + " deleted.");
+	}
+	if(self.pers["weaponDrops"] < 1)
+	{
+		//this to move the scrollbar when you deleted the last saved thing
+	}
+}
+tpPickup(num)
+{
+	pickupWeap = self.pers["pickupWeap"][num];
+	self.pers["tehpickup"][num] delete();
+	self.pers["pickupWeap"][num] = pickupWeap;
+	self.pers["pickupPos"][num] = self.origin;
+	self.pers["pickupAng"][num] = self.angles;
+	self.pers["tehpickup"][self.pers["num"]] = spawnPickup( self.pers["pickupWeap"][num], self.pers["pickupPos"][num], undefined, self.pers["pickupWeapClip"][num], self.pers["pickupWeapStock"][num] );
+}
+respawnPickups()
+{
+	if(self.pers["weaponDrops"] > 0)
+	{
+		for( i = 1; i <= self.pers["weaponDrops"]; i++ )
+		{
+			self.pers["tehpickup"][i] delete();
+			self.pers["tehpickup"][i] = spawnPickup( self.pers["pickupWeap"][i], self.pers["pickupPos"][i], undefined, self.pers["pickupWeapClip"][i], self.pers["pickupWeapStock"][i] );
+		}
+	}
+}
+weaponPickupClip(num)
+{
+	if(self.pers["pickupWeapClip"][num] > 1){
+		self.pers["pickupWeapClip"][num] = 1;
+	}
+	else if(self.pers["pickupWeapClip"][num] == 1){
+		self.pers["pickupWeapClip"][num] = 0;
+	}
+	else if(self.pers["pickupWeapClip"][num] == 0){
+		self.pers["pickupWeapClip"][num] = weaponClipSize(self.pers["pickupWeap"][num]);
+	}
+	self iPrintln( "Pickup " + num + " clip set to " + self.pers["pickupWeapClip"][num] );
+	self.pers["tehpickup"][num] delete();
+	self.pers["tehpickup"][num] = spawnPickup( self.pers["pickupWeap"][num], self.pers["pickupPos"][num]);
+	self.pers["tehpickup"][num] itemWeaponSetAmmo(self.pers["pickupWeapClip"][num], self.pers["pickupWeapStock"][num]);
+}
+weaponPickupStock(num)
+{
+	clip = weaponClipSize(self.pers["pickupWeap"][num]);
+	if(self.pers["pickupWeapStock"][num] > clip){
+		self.pers["pickupWeapStock"][num] = clip;
+	}
+	else if(self.pers["pickupWeapStock"][num] == clip){
+		self.pers["pickupWeapStock"][num] = 0;
+	}
+	else if(self.pers["pickupWeapStock"][num] == 0){
+		self.pers["pickupWeapStock"][num] = clip * 10;
+	}
+	self iPrintln( "Pickup " + num + " stock set to " + self.pers["pickupWeapStock"][num] );
+	self.pers["tehpickup"][num] delete();
+	self.pers["tehpickup"][num] = spawnPickup( self.pers["pickupWeap"][num], self.pers["pickupPos"][num]);
+	self.pers["tehpickup"][num] itemWeaponSetAmmo(self.pers["pickupWeapClip"][num], self.pers["pickupWeapStock"][num]);
+}
+t_reloadPickupsOnSpawn()
+{
+	if(!self.pers["reloadPickupsOnSpawn"])
+		self.pers["reloadPickupsOnSpawn"] = 1;
+	else
+		self.pers["reloadPickupsOnSpawn"] = 0;
+}
+spawnPickup( weapon, location, angles, clip, stock)
+{
+	if(!isDefined(angles))angles = ( 0, self.angles[1], 90 );
+	if(!isDefined(clip))clip = weaponClipSize(weapon);
+	if(!isDefined(stock))stock = weaponClipSize(weapon) * 10;
+	pickup = spawn("weapon_" + weapon, location );
+	pickup.angles = angles;
+	pickup.weapon = weapon;
+	pickup.clip = clip;
+	pickup.stock = stock;
+	pickup.placeholder = spawn( "script_origin", location + ( 0, 0, 5 ) );
+	pickup.placeholder enableLinkTo();
+	pickup linkTo(pickup.placeholder);
+	pickup itemWeaponSetAmmo(pickup.clip, pickup.stock);
+	return pickup;
+}
