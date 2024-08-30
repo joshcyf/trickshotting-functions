@@ -40,7 +40,7 @@ saveWeaponPickup(weap, pos)
 		self.pers["pickupWeap"][self.pers["weaponDrops"]] = weap;
 		self.pers["pickupWeapClip"][self.pers["weaponDrops"]] = self getWeaponAmmoClip( self.pers["pickupWeap"][self.pers["weaponDrops"]] );
 		self.pers["pickupWeapStock"][self.pers["weaponDrops"]] = self getWeaponAmmoStock( self.pers["pickupWeap"][self.pers["weaponDrops"]] );
-		cyfP("Pickup #" + self.pers["weaponDrops"] + " saved: " + self.pers["pickupWeap"][self.pers["weaponDrops"]] );
+		self iPrintln("Pickup #" + self.pers["weaponDrops"] + " saved: " + self.pers["pickupWeap"][self.pers["weaponDrops"]] );
 		self.pers["tehpickup"][self.pers["weaponDrops"]] = createPickup(self.pers["pickupWeap"][self.pers["weaponDrops"]], self.pers["pickupPos"][self.pers["weaponDrops"]]);	
 	}
 }
