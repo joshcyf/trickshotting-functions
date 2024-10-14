@@ -1,0 +1,28 @@
+what it looks like: https://www.youtube.com/watch?v=PG1VijI-Y60
+
+quickElev4()
+{
+	//shoutout foxis
+	newpos = undefined;
+	dvar = [];
+	for(i = 0;i < 3;i++)
+	{
+		dvar[i] = "asc_temp" + i;
+		setDvar( dvar[i], self.origin[i] );
+	}
+	self.checkingAngles = self getPlayerAngles();
+	wait .05;
+	self.pers["customCoords"] = ( getDvarInt(dvar[0]), getDvarInt(dvar[1]), getDvarInt(dvar[2]) );
+	if(self.checkingAngles[1] > -45 && self.checkingAngles[1] < 45 ) newpos = self.pers["customCoords"] + (1,0,0);
+	else if(self.checkingAngles[1] > -135 && self.checkingAngles[1] < -45 ) newpos = self.pers["customCoords"] + (0,-1,0);
+	else if(self.checkingAngles[1] < 135 && self.checkingAngles[1] > 45 ) newpos = self.pers["customCoords"] + (0,1,0);
+	else newpos = self.pers["customCoords"] + (0,-1,0);
+	if( isDefined( newpos ) ) self setOrigin( newpos );
+	checkEle = self.origin;
+	wait .05;
+	if(self.origin[2] > checkEle[2])
+	{
+		self iPrintlnBold("Elevator Coordinates: " + checkEle + " ");
+		setDvar(strTok(getDvar("mapname"), "_")[1] + "_ele", checkEle);
+	}
+}
